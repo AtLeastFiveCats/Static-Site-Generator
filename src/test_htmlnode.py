@@ -6,11 +6,11 @@ class TestHTMLNode(unittest.TestCase):
     def test_that__repr___works(self):
 #Testing if __repr__ works as expected
         node1 = HTMLNode(tag="p", value="This is some test text")
-        expected = f'p, This is some test text, None,  '
+        expected = f'p, This is some test text, None, '
         self.assertEqual(repr(node1), expected)
 
 #Testing if props_to_html works without any input
-        self.assertEqual(node1.props_to_html(), " ")
+        self.assertEqual(node1.props_to_html(), "")
 
 #Testing if props_to_html works as expected
         node2 = HTMLNode(tag="a", value="Goodle!", props={"href": "https://goodle.com", "target": "_blank"})
