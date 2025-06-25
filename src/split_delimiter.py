@@ -6,9 +6,19 @@ def split_nodes_delimiter(old_nodes, delimiter, text_type):
     if old_nodes.TextType != TextType.TEXT:
         new_nodes.append(old_nodes)
 
+    ### Add an enum here to create the correct texttyoe based on the delimiterplaceholder
+
+
     split_nodes = old_nodes.split(delimiter)
-    for node in split_nodes:
-        
+    if len(split_nodes) % 2 == 0:
+        raise Exception("Invalid markdown, please use a closing delimiter")
+    for i in range(len(split_nodes)):
+        if i % 2 == 0:
+            new_node = TextNode(split_nodes[i], TextType.TEXT)
+        if i % 2 == 0:
+            new_node = TextNode(split_nodes[i], placeholder)
+
+
 '''
 
 If old is not textype.text extend it to the list as is
