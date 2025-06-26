@@ -3,22 +3,40 @@ from textnode import TextType
 
 def split_nodes_delimiter(old_nodes, delimiter, text_type):
     new_nodes =[]
-    if old_nodes.TextType != TextType.TEXT:
+    deli_indicator = TextType.TEXT
+
+    if old_nodes.text_type != TextType.TEXT:
         new_nodes.append(old_nodes)
 
-    ### Add an enum here to create the correct texttyoe based on the delimiterplaceholder
+    if "```" in old_nodes.text:
+        deli_indicator = TextType.CODE
 
+    if "**" in old_nodes.text:
+        deli_indicator = TextType.BOLD
+        
+    if "__" in old_nodes.text:
+        deli_indicator = TextType.ITALIC
 
-    split_nodes = old_nodes.split(delimiter)
+    if "[" in old_nodes.text:
+        deli_indicator = TextType.LINK
+
+    if "![" in old_nodes.text:
+        deli_indicator = TextType.IMAGE
+
+    split_nodes = old_nodes.text.split(delimiter)
+   
     if len(split_nodes) % 2 == 0:
         raise Exception("Invalid markdown, please use a closing delimiter")
+    
     for i in range(len(split_nodes)):
         if i % 2 == 0:
-            new_node = TextNode(split_nodes[i], TextType.TEXT)
-        if i % 2 == 0:
-            new_node = TextNode(split_nodes[i], placeholder)
+            new_text = TextNode(split_nodes[i], TextType.TEXT)
+        if i % 2 != 0:
+            new_text = TextNode(split_nodes[i], deli_indicator)
+        
+        new_nodes.append(new_text)
 
-
+    return new_nodes
 '''
 
 If old is not textype.text extend it to the list as is
