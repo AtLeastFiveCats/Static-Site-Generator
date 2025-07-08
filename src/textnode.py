@@ -8,6 +8,7 @@ class TextType(Enum):
     LINK = "link" 
     CODE = "code"
     QUOTE = "quote"
+#These texttypes are not supported just yet
     HEADING = "heading"
     ORDERED_LIST = "ordered list"
     UNORDERED_LIST = "unordered list"
