@@ -3,7 +3,7 @@ from split_images_and_links import split_nodes_image
 from split_images_and_links import split_nodes_links
 from textnode import TextNode
 from textnode import TextType
-class TestLeafNode(unittest.TestCase):
+class TestSplitImagesLinks(unittest.TestCase):
     def test_split_images(self):
         node = TextNode("This is some text with a ![image](https://somelink.com)", TextType.TEXT)
 
@@ -51,3 +51,38 @@ class TestLeafNode(unittest.TestCase):
         new_nodes = split_nodes_links(node.text)
         self.assertListEqual(new_nodes, [node])
 
+    def test_split_multiple_images(self):
+        node = TextNode(
+            "This is text with an ![image](https://i.imgur.com/zjjcJKZ.png) and another ![second image](https://i.imgur.com/3elNhQu.png)",
+            TextType.TEXT,
+        )
+        new_nodes = split_nodes_image(node.text)
+        self.assertListEqual(
+            [
+                TextNode("This is text with an ", TextType.TEXT),
+                TextNode("image", TextType.IMAGE, "https://i.imgur.com/zjjcJKZ.png"),
+                TextNode(" and another ", TextType.TEXT),
+                TextNode(
+                    "second image", TextType.IMAGE, "https://i.imgur.com/3elNhQu.png"
+                ),
+            ],
+            new_nodes,
+        )
+    
+    def test_split_multiple_links(self):
+        node = TextNode(
+            "This is text with an [link](https://i.imgur.com/zjjcJKZ.png) and another [second link](https://i.imgur.com/3elNhQu.png)",
+            TextType.TEXT,
+    )
+        new_nodes = split_nodes_links(node.text)
+        self.assertListEqual(
+            [
+                TextNode("This is text with an ", TextType.TEXT),
+                TextNode("link", TextType.LINK, "https://i.imgur.com/zjjcJKZ.png"),
+                TextNode(" and another ", TextType.TEXT),
+                TextNode(
+                    "second link", TextType.LINK, "https://i.imgur.com/3elNhQu.png"
+                ),
+            ],
+            new_nodes,
+        )

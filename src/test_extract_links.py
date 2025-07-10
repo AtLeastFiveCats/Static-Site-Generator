@@ -2,7 +2,7 @@ import unittest
 from extract_links import extract_markdown_images
 from extract_links import extract_markdown_links
 
-class TestLeafNode(unittest.TestCase):
+class TestExtractLinks(unittest.TestCase):
     def test_extract_markdown_images(self):
         matches = extract_markdown_images(
             "This is text with an ![image](https://i.imgur.com/zjjcJKZ.png)"

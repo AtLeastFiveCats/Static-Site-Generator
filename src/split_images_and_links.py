@@ -37,14 +37,15 @@ def split_nodes_links(old_node):
 
     for current_tuple in extracted_tuple:
         alt_text, url = current_tuple
-        markdown_image = f"![{alt_text}]({url})"
-        split_list = copied_old_node.split(markdown_image, maxsplit=1)
+        markdown_link = f"[{alt_text}]({url})"
+    #Split the textnode once based on where the link was and create a textnode before that point and a link node after that point
+        split_list = copied_old_node.split(markdown_link, maxsplit=1)
         text_node = TextNode(split_list[0], TextType.TEXT)
-        image_node = TextNode(alt_text, TextType.IMAGE, url)
-
+        link_node = TextNode(alt_text, TextType.LINK, url)
+    #Then append both the list and assign the old node the section that wasn't split
         list_to_return.append(text_node)
-        list_to_return.append(image_node)
-        copied_old_node = split_list[0]
+        list_to_return.append(link_node)
+        copied_old_node = split_list[1]
 
     if copied_old_node != "":
         text_node = TextNode(copied_old_node, TextType.TEXT)
@@ -66,7 +67,7 @@ def split_nodes_image(old_node):
 
         list_to_return.append(text_node)
         list_to_return.append(image_node)
-        copied_old_node = split_list[0]
+        copied_old_node = split_list[1]
    
    #Checking if the old node has any string left to append 
     if copied_old_node: 
