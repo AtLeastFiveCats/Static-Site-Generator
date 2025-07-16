@@ -8,6 +8,7 @@ def split_nodes_delimiter(nodes, delimiter, text_type):
     for old_nodes in nodes:
         if old_nodes.text_type != TextType.TEXT:
             new_nodes.append(old_nodes)
+            continue 
 
         if "```" in old_nodes.text:
             deli_indicator = TextType.CODE
