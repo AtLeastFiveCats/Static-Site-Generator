@@ -10,13 +10,13 @@ def split_nodes_delimiter(nodes, delimiter, text_type):
             new_nodes.append(old_nodes)
             continue 
 
-        if "```" in old_nodes.text:
+        if delimiter == "```":
             deli_indicator = TextType.CODE
 
-        if "**" in old_nodes.text:
+        if delimiter == "**":
             deli_indicator = TextType.BOLD
         
-        if "__" in old_nodes.text:
+        if delimiter == "__":
             deli_indicator = TextType.ITALIC
 
         split_nodes = old_nodes.text.split(delimiter)
