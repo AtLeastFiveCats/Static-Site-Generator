@@ -1,6 +1,7 @@
 from textnode import TextNode
 from textnode import TextType
 
+# Takes a list of nodes and assigns them the correct inline markdown texttype, returns a list
 def split_nodes_delimiter(nodes, delimiter, text_type):
     new_nodes =[]
     deli_indicator = TextType.TEXT

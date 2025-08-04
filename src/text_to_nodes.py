@@ -5,9 +5,9 @@ from split_images_and_links import split_nodes_image
 from split_images_and_links import split_nodes_links
 import extract_links
 
+# Takes makrdown text and returns a list of inline nodes
 def markdown_to_textnode(text):
     new_node = TextNode(text, TextType.TEXT)
-#Something about issues with a list    
     inline_node = split_nodes_delimiter([new_node], "```", TextType.TEXT)       
     inline_node = split_nodes_delimiter(inline_node, "**", TextType.TEXT)
     inline_node = split_nodes_delimiter(inline_node, "__", TextType.TEXT) 
