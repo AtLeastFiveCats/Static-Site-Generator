@@ -16,19 +16,21 @@ def markdown_to_blocks(markdown: str):
         block_type: str = block_to_block_type(block)
         match block_type:
             case Types.PARAGRAPH:
-                parent_wrapper_node = para_to_html(block)
+                parent_wrapper_node = HTMLNode(children = para_to_html(block))
             case Types.HEADING:
-                parent_wrapper_node = heading_to_html(block)
+                parent_wrapper_node = HTMLNode(children = heading_to_html(block))
             case Types.QUOTE:
-                parent_wrapper_node = quote_md_to_html(block)
+                parent_wrapper_node = HTMLNode(children = quote_md_to_html(block))
             case Types.CODE:
                 parent_wrapper_node = HTMLNode(value = "<pre></pre>", children = code_md_to_html(block))
             case Types.UNORDERED_LIST:
                 parent_wrapper_node = HTMLNode(value = "<ul></ul>", children = uo_list_to_html(block))
             case Types.ORDERED_LIST:
                 parent_wrapper_node = HTMLNode(value = "<ol></ol>", children = o_list_to_html(block))
-         
+        parent_wrapper_node.children: list = inline_to_html(parent_wrapper_node, block_type)
         grandparent_html_list.append(parent_wrapper_node)
+    grandparent_html_node = HTMLNode(value = "<div></div>", children = grandparent_html_list)
+    return grandparent_html_node
 
 
 # Func to deal with inline
