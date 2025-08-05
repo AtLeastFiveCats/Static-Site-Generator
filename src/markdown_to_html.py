@@ -4,16 +4,31 @@ from split_blocks import markdown_block_splitter
 from htmlnode import HTMLNode
 from text_to_node import markdown_to_textnode
 from textnode import TextType
+from enum import Enum
 
 # Func to split text into blocks
 def markdown_to_blocks(markdown: str):
-    parent_html_node = []
+    Types = Enum("Types", ["BlockType.PARAGRAPH", "BlockType.HEADING", "BlockType.CODE", "BlockType.QUOTE", "BlockType.UNORDERED_LIST", "BlockType.ORDERED_LIST"])
+
+    grandparent_html_list: list = []
     blocks: list = markdown_block_splitter(markdown)
     for block in blocks:
         block_type: str = block_to_block_type(block)
-        html_node = HTMLNode(block, block_type) 
-        html_node.props: list = inline_to_html(block, block_type)
-        parent_html_node.append(html_node)
+        match block_type:
+            case Types.PARAGRAPH:
+                parent_wrapper_node = para_to_html(block)
+            case Types.HEADING:
+                parent_wrapper_node = heading_to_html(block)
+            case Types.QUOTE:
+                parent_wrapper_node = quote_md_to_html(block)
+            case Types.CODE:
+                parent_wrapper_node = HTMLNode(value = "<pre></pre>", children = code_md_to_html(block))
+            case Types.UNORDERED_LIST:
+                parent_wrapper_node = HTMLNode(value = "<ul></ul>", children = uo_list_to_html(block))
+            case Types.ORDERED_LIST:
+                parent_wrapper_node = HTMLNode(value = "<ol></ol>", children = o_list_to_html(block))
+         
+        grandparent_html_list.append(parent_wrapper_node)
 
 
 # Func to deal with inline
@@ -22,6 +37,7 @@ def inline_to_html(block, block_type):
     if block_type == BlockType.CODE:
         return code_md_to_html(block)
     markdown_nodes: list = markdown_to_textnode(block)
+    # Converts the markdown blocks into child html nodes and appends them to a list to be assigned to a parent html node
     for node in markdown_nodes:
         child_html_node = HTMLNode(node.text, node.TextType)
         child_nodes.append(child_html_node)
