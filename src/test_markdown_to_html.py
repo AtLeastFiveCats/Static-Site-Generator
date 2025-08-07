@@ -1,4 +1,5 @@
 import unittest
+from markdown_to_html import markdown_to_blocks
 
 class Test_md_to_html(unittest.TestCase):
 
@@ -12,7 +13,7 @@ class Test_md_to_html(unittest.TestCase):
 
     """
 
-        node = markdown_to_html(md)
+        node = markdown_to_blocks(md)
         html = node.to_html()
         self.assertEqual(
         html,
@@ -27,7 +28,7 @@ class Test_md_to_html(unittest.TestCase):
     ```
     """
 
-        node = markdown_to_html_node(md)
+        node = markdown_to_blocks(md)
         html = node.to()
         self.assertEqual(
             html,
