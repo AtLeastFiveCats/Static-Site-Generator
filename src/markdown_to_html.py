@@ -26,57 +26,56 @@ def markdown_to_blocks(markdown: str):
                 parent_wrapper_node = HTMLNode(value = "<ul></ul>", children = uo_list_to_html(block))
             case BlockType.ORDERED_LIST:
                 parent_wrapper_node = HTMLNode(value = "<ol></ol>", children = o_list_to_html(block))
-        parent_wrapper_node.children: list = inline_to_html(parent_wrapper_node, block_type)
+        if block_type != BlockType.CODE: 
+            parent_wrapper_node.children: list = inline_to_html(block)
         grandparent_html_list.append(parent_wrapper_node)
     grandparent_html_node = HTMLNode(value = "<div></div>", children = grandparent_html_list)
     return grandparent_html_node
 
 
 # Func to deal with inline
-def inline_to_html(block, block_type):
+def inline_to_html(block):
     child_nodes: list = []    
-    if block_type == BlockType.CODE:
-        return code_md_to_html(block)
     markdown_nodes: list = markdown_to_textnode(block)
     # Converts the markdown blocks into child html nodes and appends them to a list to be assigned to a parent html node
     for node in markdown_nodes:
-        child_html_node = HTMLNode(node.text, node.TextType)
+        child_html_node = HTMLNode(node.text, node.text_type)
         child_nodes.append(child_html_node)
     return child_nodes
 
 # Dealing with code blocks
-def code_md_to_html(block: str):
-    clean_block: str = block.text.replace("```", "")
-    return f"<code>{clean_block}</code>"
+def code_md_to_html(text: str):
+    clean_text: str = text.replace("```", "")
+    return f"<code>{clean_text}</code>"
     # Need to nest code inside a html node with pre tag
 
 # Quote to html
-def quote_md_to_html(block: str):
-    front_tag: str = block.replace("> ", "<blockquote>")
+def quote_md_to_html(text: str):
+    front_tag: str = text.replace("> ", "<blockquote>")
     return f"{front_tag}</blockquote>"
 
 # Unordered lists to html
-def uo_list_to_html(block: str):
-    front_tag: str = block.replace("- ", "<li>")
+def uo_list_to_html(text: str):
+    front_tag: str = text.replace("- ", "<li>")
     return f"{front_tag}</li>"
     # Need to nest inside a html node with ul tag
 
 # Ordered list to html
-def o_list_to_html(block: str):
-    split_block: list = block.split("\n")
+def o_list_to_html(text: str):
+    split_block: list = text.split("\n")
     fixed_tags: list = [f"<li>{line}</li>" for line in split_block]
     return fixed_tags
     # Need to nest this inside a html node with ol tag
 
 # Headings to html
-def heading_to_html(block: str):
+def heading_to_html(text: str):
     heading: str = ""
     for i in range(6):
         heading += "#"
-        if block.startswith(f"{heading} "):
-            return f"<h{i}>{block}</h{i}>"
+        if text.startswith(f"{heading} "):
+            return f"<h{i}>{text}</h{i}>"
 
 # Paragraph to html
-def para_to_html(block: str):
-    return f"<p>{block}</p>"
+def para_to_html(text: str):
+    return f"<p>{text}</p>"
 
