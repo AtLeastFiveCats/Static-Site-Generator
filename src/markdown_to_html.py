@@ -5,6 +5,7 @@ from htmlnode import HTMLNode
 from text_to_nodes import markdown_to_textnode
 from textnode import TextType
 from enum import Enum
+from parentnode import ParentNode
 
 # Func to split text into blocks
 def markdown_to_blocks(markdown: str):
@@ -39,7 +40,7 @@ def inline_to_html(block):
     markdown_nodes: list = markdown_to_textnode(block)
     # Converts the markdown blocks into child html nodes and appends them to a list to be assigned to a parent html node
     for node in markdown_nodes:
-        child_html_node = HTMLNode(node.text, node.text_type)
+        child_html_node = ParentNode(node.text, node.text_type)
         child_nodes.append(child_html_node)
     return child_nodes
 
