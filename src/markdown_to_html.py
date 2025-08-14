@@ -6,6 +6,7 @@ from text_to_nodes import markdown_to_textnode
 from textnode import TextType
 from enum import Enum
 from parentnode import ParentNode
+from leafnode import LeafNode
 
 # Func to split text into blocks
 def markdown_to_blocks(markdown: str):
@@ -16,21 +17,21 @@ def markdown_to_blocks(markdown: str):
         block_type: str = block_to_block_type(block)
         match block_type:
             case BlockType.PARAGRAPH:
-                parent_wrapper_node = HTMLNode(children = para_to_html(block))
+                parent_wrapper_node = LeafNode(value = None, children = para_to_html(block))
             case BlockType.HEADING:
-                parent_wrapper_node = HTMLNode(children = heading_to_html(block))
+                parent_wrapper_node = LeafNode(value = None, children = heading_to_html(block))
             case BlockType.QUOTE:
-                parent_wrapper_node = HTMLNode(children = quote_md_to_html(block))
+                parent_wrapper_node = LeafNode(value = None, children = quote_md_to_html(block))
             case BlockType.CODE:
-                parent_wrapper_node = HTMLNode(value = "<pre></pre>", children = code_md_to_html(block))
+                parent_wrapper_node = ParentNode(tag = "<pre></pre>", children = code_md_to_html(block))
             case BlockType.UNORDERED_LIST:
-                parent_wrapper_node = HTMLNode(value = "<ul></ul>", children = uo_list_to_html(block))
+                parent_wrapper_node = ParentNode(tag = "<ul></ul>", children = uo_list_to_html(block))
             case BlockType.ORDERED_LIST:
-                parent_wrapper_node = HTMLNode(value = "<ol></ol>", children = o_list_to_html(block))
+                parent_wrapper_node = ParentNode(tag = "<ol></ol>", children = o_list_to_html(block))
         if block_type != BlockType.CODE: 
             parent_wrapper_node.children: list = inline_to_html(block)
         grandparent_html_list.append(parent_wrapper_node)
-    grandparent_html_node = HTMLNode(value = "<div></div>", children = grandparent_html_list)
+    grandparent_html_node = ParentNode(tag = "<div></div>", children = grandparent_html_list)
     return grandparent_html_node
 
 
@@ -40,7 +41,7 @@ def inline_to_html(block):
     markdown_nodes: list = markdown_to_textnode(block)
     # Converts the markdown blocks into child html nodes and appends them to a list to be assigned to a parent html node
     for node in markdown_nodes:
-        child_html_node = ParentNode(node.text, node.text_type)
+        child_html_node = HTMLNode(node.text, node.text_type)
         child_nodes.append(child_html_node)
     return child_nodes
 
