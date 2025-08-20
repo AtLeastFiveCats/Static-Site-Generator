@@ -8,4 +8,10 @@ from leafnode import LeafNode
 
 # Func to split text into blocks
 def markdown_to_blocks(markdown: str):
+    blocks: list = markdown_block_splitter(markdown)
+    for block: str in blocks:
+        block_type: str = block_to_block_type(block)
+
+        match block_type:
+            case BlockType.
 
