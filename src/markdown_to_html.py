@@ -5,17 +5,22 @@ from textnode import TextType, TextNode
 from enum import Enum
 from parentnode import ParentNode
 from leafnode import LeafNode
+import re
 
 # Helper func for child
 def child_md_to_html(block: str):
-    stripper: str = block.replace("\n", " ")
+    stripper: str = re.sub(r" +", " ", block.replace("\n", " "))
     inline_node = markdown_to_textnode(stripper)
-    child = LeafNode(tag = text_type_to_tag(inline_node.text_type), value = inline_node.text)
-    return child
+    child_list: list = []
+    for node in inline_node:
+        child = LeafNode(tag = text_type_to_tag(node.text_type), value = node.text)
+        child_list.append(child)
+    return child_list
 
 # Helper func for code block child
 def child_code_md_to_html(code):
-    pass
+    # Might need to strip the ```
+     return TextNode(text = code, text_type = TextType.CODE)
 
 # Helper func to convert tag
 def text_type_to_tag(text_type: str):
@@ -30,7 +35,7 @@ def text_type_to_tag(text_type: str):
             return "i"
 
         case TextType.CODE:
-            return "c"
+            return "code"
 
         case TextType.QUOTE:
             return "q"
@@ -41,10 +46,15 @@ def text_type_to_tag(text_type: str):
         case TextType.IMAGE:
             return "img"
 
+# Helper func to wrap list items in li tags
+def li_helper(block):
+    return ParentNode(tag = "li", children = child_md_to_html(block))
+
 # Func to split text into blocks
 def markdown_to_blocks(markdown: str):
     blocks: list = markdown_block_splitter(markdown)
-    for block: str in blocks:
+    parent_list: list = []
+    for block in blocks:
         block_type: str = block_to_block_type(block)
 
         match block_type:
@@ -53,12 +63,29 @@ def markdown_to_blocks(markdown: str):
                 parent = ParentNode(tag = "p", children = child_md_to_html(block))
 
             case BlockType.HEADING:
+                number = 0
+                heading: str = ""
+                for i in range(6):
+                    heading += "#"
+                    if block.startswith(f"{heading}"):
+                        number = i
+                parent = ParentNode(tag = "h{number}", children = child_md_to_html(block))
 
             case BlockType.QUOTE:
+                parent = ParentNode(tag = "blockquote", children = child_md_to_html(block))
 
             case BlockType.UNORDERED_LIST:
+                li_child = li_helper(block)
+                parent = ParentNode(tag = "ul", children = li_child)
 
             case BlockType.ORDERED_LIST:
+                li_child = li_helper(block)
+                parent = ParentNode(tag = "ol", children = li_child)
 
             case BlockType.CODE:
-
+                code_tag = ParentNode(tag = "code", children = child_code_md_to_html(block))
+                parent = ParentNode(tag = "pre", children = code_tag)
+        parent_list.append(parent)
+    
+    div_node = ParentNode(tag = "div", children = parent_list)
+    return div_node

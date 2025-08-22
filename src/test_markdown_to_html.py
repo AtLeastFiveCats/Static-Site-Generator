@@ -9,7 +9,7 @@ class Test_md_to_html(unittest.TestCase):
     text in a p
     tag here
 
-    This is another paragraph with _italic_ text and `code` here
+    This is another paragraph with __italic__ text and ```code``` here
 
     """
 
