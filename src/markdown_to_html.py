@@ -20,7 +20,15 @@ def child_md_to_html(block: str):
 # Helper func for code block child
 def child_code_md_to_html(code):
     # Might need to strip the ```
-     return TextNode(text = code, text_type = TextType.CODE)
+    code_content: str = code[3:-3]
+    if code_content.startswith("\n"):
+        lines = code_content.split("\n")
+        code_content = [line.lstrip() for line in lines]
+        joined_code = "\n".join(code_content)
+        #        code_content = code_content[5:]
+    html_code = LeafNode(value = joined_code)
+    code_list = [html_code]
+    return code_list
 
 # Helper func to convert tag
 def text_type_to_tag(text_type: str):
@@ -84,7 +92,7 @@ def markdown_to_blocks(markdown: str):
 
             case BlockType.CODE:
                 code_tag = ParentNode(tag = "code", children = child_code_md_to_html(block))
-                parent = ParentNode(tag = "pre", children = code_tag)
+                parent = ParentNode(tag = "pre", children = [code_tag])
         parent_list.append(parent)
     
     div_node = ParentNode(tag = "div", children = parent_list)
