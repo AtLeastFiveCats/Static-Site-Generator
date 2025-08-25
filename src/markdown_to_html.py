@@ -22,6 +22,7 @@ def child_code_md_to_html(code):
     # Might need to strip the ```
     code_content: str = code[3:-3]
     if code_content.startswith("\n"):
+        code_content = code_content.lstrip("\n")
         lines = code_content.split("\n")
         code_content = [line.lstrip() for line in lines]
         joined_code = "\n".join(code_content)
